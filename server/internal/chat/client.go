@@ -35,6 +35,6 @@ func (handler *ClientHandler) Run() {
 	}()
 
 	for msg := range handler.Send {
-		handler.Connection.Write([]byte(fmt.Sprint(msg.Sender.Username, ": ", msg.Content)))
+		handler.Connection.Write([]byte(fmt.Sprint(msg.Sender.Username, ":", msg.Content)))
 	}
 }

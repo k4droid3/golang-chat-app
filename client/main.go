@@ -15,13 +15,28 @@ func main() {
 
 	conn.Write([]byte("Hello please let me join.\n"))
 
-	for {
+	go func() {
 		buf := make([]byte, 1024)
 		n, err := conn.Read(buf)
 		if err != nil {
 			fmt.Println("Error reading:", err)
 			return
 		}
-		fmt.Println("Server response: ", buf[:n])
+		fmt.Println("Server response: ", string(buf[:n]))
+	}()
+
+	for {
+		var input string
+		fmt.Scanln(&input)
+		if input == "exit" {
+			fmt.Println("Exiting...")
+			return
+		}
+		_, err := conn.Write([]byte(input + "\n"))
+		if err != nil {
+			fmt.Println("Error writing:", err)
+			return
+		}
+		fmt.Println("Sent to server:", input)
 	}
 }
