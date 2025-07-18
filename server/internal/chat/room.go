@@ -32,6 +32,7 @@ func (room *Room) Run() {
 			delete(room.Clients, client)
 			fmt.Println(client.User.Username, " left the room ", room.Name)
 		case msg := <-room.Broadcast:
+			fmt.Println("Broadcasting message in room", room.Name, ":", msg.Content)
 			for client := range room.Clients {
 				client.Send <- msg
 			}
