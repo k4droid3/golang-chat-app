@@ -14,7 +14,7 @@ type ClientHandler struct {
 }
 
 func (handler *ClientHandler) Run() {
-	// defer handler.Connection.Close()
+	defer handler.Connection.Close()
 
 	go func() {
 		buf := make([]byte, 1024)
@@ -35,6 +35,7 @@ func (handler *ClientHandler) Run() {
 	}()
 
 	for msg := range handler.Send {
-		handler.Connection.Write([]byte(fmt.Sprint(msg.Sender.Username, ":", msg.Content)))
+		fmt.Println("handler writing msg to", handler.User.Username)
+		fmt.Fprint(handler.Connection, msg.Sender.Username, ":", msg.Content)
 	}
 }

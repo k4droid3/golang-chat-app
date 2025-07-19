@@ -17,12 +17,14 @@ func main() {
 
 	go func() {
 		buf := make([]byte, 1024)
-		n, err := conn.Read(buf)
-		if err != nil {
-			fmt.Println("Error reading:", err)
-			return
+		for {
+			n, err := conn.Read(buf)
+			if err != nil {
+				fmt.Println("Error reading:", err)
+				return
+			}
+			fmt.Println("Server response: ", string(buf[:n]))
 		}
-		fmt.Println("Server response: ", string(buf[:n]))
 	}()
 
 	for {

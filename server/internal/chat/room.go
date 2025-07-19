@@ -35,6 +35,7 @@ func (room *Room) Run() {
 			fmt.Println("Broadcasting message in room", room.Name, ":", msg.Content)
 			for client := range room.Clients {
 				client.Send <- msg
+				fmt.Println("mssg sent to client", client.User.Username)
 			}
 		}
 	}
