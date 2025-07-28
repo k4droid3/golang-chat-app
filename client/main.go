@@ -1,3 +1,4 @@
+// Old script used to test the working of client... needs to be removed when TUI is built.
 package main
 
 import (
