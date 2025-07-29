@@ -4,7 +4,11 @@ import (
 	"os"
 )
 
-type InputHandler struct {
+type TermHandler struct {
+	Input *inputHandler
+}
+
+type inputHandler struct {
 	Source  *os.File
 	BufText chan byte
 }

@@ -9,10 +9,3 @@ type Message struct {
 	Content   string
 	Timestamp time.Time
 }
-
-type State struct {
-	User       string
-	Status     ConnStatus
-	History    []Message
-	newMessage chan Message
-}
