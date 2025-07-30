@@ -9,7 +9,6 @@ type view struct {
 	Status      chat.ConnStatus
 	History     []chat.Message
 	InputBuffer string
-	SentBuffer  []string
 	Height      int
 	Width       int
 	//TODO: add lock
