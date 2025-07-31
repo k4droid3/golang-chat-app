@@ -17,6 +17,7 @@ type Client struct {
 func NewClient(user string) *Client {
 	return &Client{
 		Ui:   tui.NewTui(user, 24, 80),
+		Conn: chat.NewConnHandler("127.0.0.1:8080"),
 		Term: term.NewTermHandler(),
 	}
 }
@@ -27,9 +28,20 @@ func (c *Client) Start() error {
 	}
 	defer c.Term.Stop()
 
-	// Mock Messages
-	c.Ui.View.History = []chat.Message{{User: "Geralt", Content: "Hmm.... a round of Gwent?", Timestamp: time.Now().Add(-20 * time.Second)},
-		{User: "Yennefer", Content: "We are at a funeral!", Timestamp: time.Now()}}
+	if err := c.Conn.Connect(); err != nil {
+		return err
+	}
+
+	// // Mock Messages
+	// c.Ui.View.History = []chat.Message{{User: "Geralt", Content: "Hmm.... a round of Gwent?", Timestamp: time.Now().Add(-20 * time.Second)},
+	// 	{User: "Yennefer", Content: "We are at a funeral!", Timestamp: time.Now()}}
+
+	go func() {
+		for msg := range c.Conn.Recieve {
+			c.Ui.View.History = append(c.Ui.View.History, msg)
+			c.Ui.Render()
+		}
+	}()
 
 	c.Ui.Render()
 	for len(c.Term.InterruptSignal) == 0 {
@@ -51,6 +63,7 @@ func (c *Client) Start() error {
 			if c.Ui.View.InputBuffer == "/exit" {
 				break
 			}
+			c.Conn.Conn.Write([]byte(c.Ui.View.InputBuffer + "\n"))
 			c.Ui.View.InputBuffer = ""
 		} else if inputChar == '\b' || inputChar == 127 {
 			if len(c.Ui.View.InputBuffer) > 0 {

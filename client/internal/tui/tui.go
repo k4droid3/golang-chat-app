@@ -37,7 +37,7 @@ func (ui *Tui) Render() {
 	// Status bar
 	fmt.Print(moveCursor(2, 1), "|")
 	fmt.Print(moveCursor(2, 2), "User: ", ui.View.User)
-	fmt.Print(Green, moveCursor(2, ui.View.Width-len(ui.View.Status.String())), ui.View.Status.String(), Reset)
+	fmt.Print(Red, moveCursor(2, ui.View.Width-len(ui.View.Status.String())), ui.View.Status.String(), Reset)
 	fmt.Print(moveCursor(2, ui.View.Width), "|\n")
 
 	// Seperator
