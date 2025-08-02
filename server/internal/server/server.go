@@ -14,7 +14,7 @@ type Server struct {
 	Rooms map[string]*chat.Room
 }
 
-func NewServer(addr string, seed int64) *Server {
+func NewServer(addr string) *Server {
 	return &Server{
 		Addr:  addr,
 		Rooms: make(map[string]*chat.Room),

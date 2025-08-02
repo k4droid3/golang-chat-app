@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	sv := server.NewServer("127.0.0.1:8080", 7)
+	sv := server.NewServer("127.0.0.1:8080")
 	err := sv.Start()
 	if err != nil {
 		fmt.Println(err)
