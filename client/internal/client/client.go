@@ -1,6 +1,8 @@
 package client
 
 import (
+	"fmt"
+	"os"
 	"time"
 
 	"github.com/k4droid3/TUI-chat/internal/chat"
@@ -22,19 +24,30 @@ func NewClient(user string) *Client {
 	}
 }
 
+func (c *Client) Stop() {
+	c.Conn.Disconnect()
+	c.Term.Stop()
+}
+
 func (c *Client) Start() error {
 	if err := c.Term.Start(); err != nil {
 		return err
 	}
-	defer c.Term.Stop()
-
 	if err := c.Conn.Connect(); err != nil {
 		return err
 	}
+	defer c.Stop()
 
 	// // Mock Messages
 	// c.Ui.View.History = []chat.Message{{User: "Geralt", Content: "Hmm.... a round of Gwent?", Timestamp: time.Now().Add(-20 * time.Second)},
 	// 	{User: "Yennefer", Content: "We are at a funeral!", Timestamp: time.Now()}}
+
+	go func() {
+		<-c.Term.InterruptSignal
+		fmt.Println("Received Interrupt Signal. Stopping...")
+		c.Stop()
+		os.Exit(1)
+	}()
 
 	go func() {
 		for msg := range c.Conn.Recieve {
@@ -44,7 +57,7 @@ func (c *Client) Start() error {
 	}()
 
 	c.Ui.Render()
-	for len(c.Term.InterruptSignal) == 0 {
+	for {
 		inputChar := <-c.Term.BufChar
 		if inputChar == '\n' {
 			if c.Ui.View.InputBuffer == "/exit" {

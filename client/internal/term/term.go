@@ -66,11 +66,7 @@ func (t *TermHandler) Start() error {
 		return err
 	}
 
-	go func() {
-		signal.Notify(t.InterruptSignal, os.Interrupt)
-		<-t.InterruptSignal
-		fmt.Println("Received interrupt signal. Stopping...")
-	}()
+	go signal.Notify(t.InterruptSignal, os.Interrupt)
 
 	go func() {
 		reader := bufio.NewReader(t.InputSource)
