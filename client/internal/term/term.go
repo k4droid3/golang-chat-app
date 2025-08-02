@@ -25,7 +25,7 @@ func NewTermHandler() *TermHandler {
 		ogState:         syscall.Termios{},
 		newState:        syscall.Termios{},
 		fd:              syscall.Stdin,
-		InterruptSignal: make(chan os.Signal),
+		InterruptSignal: make(chan os.Signal, 1),
 	}
 }
 
@@ -66,7 +66,11 @@ func (t *TermHandler) Start() error {
 		return err
 	}
 
-	go signal.Notify(t.InterruptSignal, os.Interrupt)
+	go func() {
+		signal.Notify(t.InterruptSignal, os.Interrupt)
+		<-t.InterruptSignal
+		fmt.Println("Received interrupt signal. Stopping...")
+	}()
 
 	go func() {
 		reader := bufio.NewReader(t.InputSource)

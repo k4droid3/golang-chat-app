@@ -38,8 +38,8 @@ func (c *ConnHandler) Connect() error {
 			}
 			if n > 0 {
 				message := Message{
-					Content: string(buf[:n]),
-					User:    "Server", // Assuming server sends messages with "Server" as user
+					Content:   string(buf[:n]),
+					User:      "Server",
 					Timestamp: time.Now(),
 				}
 				c.Recieve <- message
@@ -48,4 +48,9 @@ func (c *ConnHandler) Connect() error {
 	}()
 
 	return nil
+}
+
+func (c *ConnHandler) Send(msg string) error {
+	_, err := c.Conn.Write([]byte(msg + "\n"))
+	return err
 }

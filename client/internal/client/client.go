@@ -46,24 +46,11 @@ func (c *Client) Start() error {
 	c.Ui.Render()
 	for len(c.Term.InterruptSignal) == 0 {
 		inputChar := <-c.Term.BufChar
-		// switch inputChar {
-		// case '\n':
-		// 	if c.Ui.View.InputBuffer == "/exit" {
-		// 		break
-		// 	}
-		// 	c.Ui.View.InputBuffer = ""
-		// case '\b', 127:
-		// 	if len(c.Ui.View.InputBuffer) > 0 {
-		// 		c.Ui.View.InputBuffer = c.Ui.View.InputBuffer[:len(c.Ui.View.InputBuffer)]
-		// 	}
-		// default:
-		// 	c.Ui.View.InputBuffer += string(inputChar)
-		// }
 		if inputChar == '\n' {
 			if c.Ui.View.InputBuffer == "/exit" {
 				break
 			}
-			c.Conn.Conn.Write([]byte(c.Ui.View.InputBuffer + "\n"))
+			c.Conn.Send(c.Ui.View.InputBuffer)
 			c.Ui.View.InputBuffer = ""
 		} else if inputChar == '\b' || inputChar == 127 {
 			if len(c.Ui.View.InputBuffer) > 0 {
